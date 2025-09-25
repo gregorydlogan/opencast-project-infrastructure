@@ -542,6 +542,52 @@ class Debs():
         self.setupRepo(f_package_debs)
         self.mountS3(f_package_debs, host="loganite")
         self.includeRepo(f_package_debs, s3_target="s3:loganite:")
+        f_package_debs.addStep(
+            steps.SetProperty(
+                property="from_component",
+                value="stable",
+                flunkOnFailure=True,
+                haltOnFailure=True,
+                name="Set component property"))
+        f_package_debs.addStep(
+            steps.SetProperty(
+                property="pkg_version",
+                value=util.Interpolate("%(prop:pkg_version)s-1"),
+                flunkOnFailure=True,
+                haltOnFailure=True,
+                name="Set pkg_version property"))
+        if buildType in [ "tobira", "whisper" ]:
+            for branch in [ {% for branch in opencast.keys() %}{% if "Develop" != branch %}"{{ opencast[branch]['pom'] }}", {% endif %}{% endfor %} ]:
+                f_package_debs.addStep(
+                    steps.SetProperty(
+                        property="from_branch",
+                        value=util.Interpolate("%(prop:pkg_major_version)s"),
+                        flunkOnFailure=True,
+                        haltOnFailure=True,
+                        name="Set from_branch property"))
+                f_package_debs.addStep(
+                    steps.SetProperty(
+                        property="to_branch",
+                        value=branch,
+                        flunkOnFailure=True,
+                        haltOnFailure=True,
+                        name="Set to_branch property"))
+                f_package_debs.addStep(
+                    steps.SetProperty(
+                        property="from_component",
+                        value="stable",
+                        flunkOnFailure=True,
+                        haltOnFailure=True,
+                        name="Set from_component property"))
+                f_package_debs.addStep(
+                    steps.SetProperty(
+                        property="to_component",
+                        value="stable",
+                        flunkOnFailure=True,
+                        haltOnFailure=True,
+                        name="Set to_component property"))
+                self.copyPackage(f_package_debs)
+
         self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
         self.publishRepo(f_package_debs, s3_target="s3:loganite:")
         self.notifyMatrix(f_package_debs, lite_message=lite_message)
@@ -753,11 +799,14 @@ class Debs():
 
             #We only provide this for develop.  Use the promote/copy builder to spread the resulting files around
             for buildtype in [ "ffmpeg", "tobira", "whisper" ]:
+                util_props = dict(prod_props) | {"repo_component": "stable", "pkg_name": buildtype}
+                if buildtype == "ffmpeg":
+                    util_props["repo_component"] = "testing"
                 builders.append(util.BuilderConfig(
                     name=f"{ buildtype.capitalize() } Pkg Testing",
                     factory=self.getBuildPipeline(buildtype),
                     workernames=self.props['workernames'],
-                    properties=dict(prod_props) | {"repo_component": "testing", "pkg_name": buildtype},
+                    properties=util_props,
                     collapseRequests=True,
                     locks=[lock.access('exclusive')]))
 
