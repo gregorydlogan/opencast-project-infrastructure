@@ -130,6 +130,7 @@ COPY buildbot.tac /builder/buildbot.tac
     # Install required python packages, and twisted
 RUN python3 -m pip --no-cache-dir install future buildbot-worker==${VERSION}
 
+COPY opencast.list /etc/apt/sources.list.d
 COPY install-ffmpeg.sh /builder/install-ffmpeg.sh
 RUN chmod 755 /builder/install-ffmpeg.sh
 
@@ -145,8 +146,6 @@ RUN apt-get update && \
         maven && \
     apt-get clean
 
-COPY opencast.list /etc/apt/sources.list.d
-
 
 FROM base AS jdk17
 
@@ -159,8 +158,6 @@ RUN apt-get update && \
         maven && \
     apt-get clean
 
-COPY opencast.list /etc/apt/sources.list.d
-
 
 FROM base AS jdk21
 
@@ -172,5 +169,3 @@ RUN apt-get update && \
     apt-get install -y \
         maven && \
     apt-get clean
-
-COPY opencast.list /etc/apt/sources.list.d

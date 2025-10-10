@@ -125,6 +125,7 @@ COPY buildbot.tac /builder/buildbot.tac
     # Install required python packages, and twisted
 RUN python3 -m pip --no-cache-dir install buildbot-worker==${VERSION}
 
+COPY opencast.repo /etc/yum.repos.d/opencast.repo
 COPY install-ffmpeg.sh /builder/install-ffmpeg.sh
 RUN chmod 755 /builder/install-ffmpeg.sh
 
@@ -138,8 +139,6 @@ RUN yum install -y \
     yum install -y \
         maven
 
-COPY opencast.repo /etc/yum.repos.d/opencast.repo
-
 
 FROM base AS jdk17
 
@@ -150,8 +149,6 @@ RUN yum install -y \
     yum install -y \
         maven
 
-COPY opencast.repo /etc/yum.repos.d/opencast.repo
-
 
 FROM base AS jdk21
 
@@ -161,5 +158,3 @@ RUN yum install -y \
     #Do this after to prevent installing the default jdk
     yum install -y \
         maven
-
-COPY opencast.repo /etc/yum.repos.d/opencast.repo
