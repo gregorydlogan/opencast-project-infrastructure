@@ -133,6 +133,7 @@ RUN chmod 755 /builder/install-ffmpeg.sh
 FROM base AS jdk11
 
 RUN yum install -y \
+        --disablerepo="opencast" --disablerepo="opencast-noarch" \
         java-11-openjdk \
         java-11-openjdk-devel && \
     #Do this after to prevent installing the default jdk
@@ -143,6 +144,7 @@ RUN yum install -y \
 FROM base AS jdk17
 
 RUN yum install -y \
+        --disablerepo="opencast" --disablerepo="opencast-noarch" \
         java-17-openjdk \
         java-17-openjdk-devel && \
     #Do this after to prevent installing the default jdk
@@ -153,6 +155,7 @@ RUN yum install -y \
 FROM base AS jdk21
 
 RUN yum install -y \
+        --disablerepo="opencast" --disablerepo="opencast-noarch" \
         java-21-openjdk \
         java-21-openjdk-devel && \
     #Do this after to prevent installing the default jdk

@@ -133,8 +133,7 @@ RUN chmod 755 /builder/install-ffmpeg.sh
 
 FROM base AS jdk11
 
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get install -y \
         openjdk-11-jre \
         openjdk-11-jdk && \
     #Do this after to prevent installing the default jdk
@@ -145,8 +144,7 @@ RUN apt-get update && \
 
 FROM base AS jdk17
 
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get install -y \
         openjdk-17-jre \
         openjdk-17-jdk && \
     #Do this after to prevent installing the default jdk
@@ -157,8 +155,7 @@ RUN apt-get update && \
 
 FROM base AS jdk21
 
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get install -y \
         openjdk-21-jre \
         openjdk-21-jdk && \
     #Do this after to prevent installing the default jdk
