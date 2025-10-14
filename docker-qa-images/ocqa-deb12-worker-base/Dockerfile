@@ -11,7 +11,7 @@ ARG         DEBIAN_FRONTEND=noninteractive
 
 LABEL org.opencontainers.image.authors="Greg Logan <gregorydlogan@gmail.com>" \
       org.opencontainers.image.title="Opencast QA Debian 12 Image" \
-      org.opencontainers.image.description="Opencast QA image based on a Debian 11 environment" \
+      org.opencontainers.image.description="Opencast QA image based on a Debian 12 environment" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Opencast" \
       org.opencontainers.image.authors="Greg Logan <gregorydlogan@gmail.com>" \
