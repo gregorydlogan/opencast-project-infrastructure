@@ -81,18 +81,15 @@ docker_worker_base_image: "worker-base"
 docker_jdk:
   11:
     - "deb11"
-    - "ubu20"
     - "ubu22"
     - "cent9"
   17:
     - "deb11"
     - "deb12"
-    - "ubu20"
     - "ubu22"
     - "ubu24"
     - "cent9"
   21:
-    - "ubu20"
     - "ubu22"
     - "ubu24"
     - "cent9"
