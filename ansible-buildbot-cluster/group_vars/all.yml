@@ -94,12 +94,13 @@ docker_jdk:
     - "ubu22"
     - "ubu24"
     - "cent9"
+    - "cent10"
 
 #The list of possible Debian based distro images
 docker_debian_worker_images: ["deb11", "deb12", "deb13", "ubu22", "ubu24"]
 
 #The list of possible CentOS based distro images
-docker_centos_worker_images: ["cent9"]
+docker_centos_worker_images: ["cent9", "cent10"]
 
 #The docker images currently supported
 docker_worker_images: "{{ docker_debian_worker_images + docker_centos_worker_images }}"
