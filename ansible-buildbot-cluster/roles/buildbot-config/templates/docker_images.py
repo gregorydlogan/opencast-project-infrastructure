@@ -128,7 +128,7 @@ class GeneratePerImageBuilds(buildstep.ShellMixin, steps.BuildStep):
                                 util.Interpolate("greglogan/%(prop:fdnwj)s:latest")],
                             doStepIf="greglogan" != util.Property("docker_host"),
                             hideStepIf="greglogan" == util.Property("docker_host"),
-                            name=util.Interpolate(f"Tagging %(prop:docker_image)s { target } latest for upstream as well")),
+                            name=util.Interpolate(f"Tagging %(prop:docker_image)s { target } latest upstream")),
                     lambda target:
                         common.shellCommand(
                             command=["docker", "push", util.Interpolate("%(prop:docker_host)s/%(prop:fdnwj)s:latest")],
