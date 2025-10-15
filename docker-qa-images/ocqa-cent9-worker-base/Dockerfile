@@ -81,7 +81,7 @@ RUN yum install -y \
         crowdin && \
     yum clean all
 
-RUN dnf module install -y nodejs:18
+RUN dnf module install -y nodejs:20
 
 # The base CentOS image strips the locales out, this reinstalls them
 RUN yum install -y \
