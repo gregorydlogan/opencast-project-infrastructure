@@ -111,7 +111,7 @@ class GeneratePerImageBuilds(buildstep.ShellMixin, steps.BuildStep):
                                 "--build-arg", util.Interpolate("VERSION=%(prop:buildbot_version)s"),
                                 "--build-arg", util.Interpolate(f"BUILD_DATE={ self.getDatetime() }"),
                                 "--target", target,
-                                "-t", util.Interpolate(f"%(prop:docker_host)s/%(prop:fdnwj)s:latest")],
+                                "-t", util.Interpolate("%(prop:docker_host)s/%(prop:fdnwj)s:latest")],
                             workdir=util.Interpolate("build/docker-qa-images/%(prop:fdn)s"),
                             name=util.Interpolate(f"Building %(prop:docker_image)s { target } %(prop:docker_tag:-buildbot_version)s"),
                             timeout=300),
@@ -304,7 +304,7 @@ class Docker():
         #Triggerable scheduler to catch the above trigger steps
         builders.append(util.BuilderConfig(
             name="ocqa worker build",
-            collapseRequests=False,
+            collapseRequests=True,
             workernames=self.props['workernames'],
             factory=self.getPushPipeline()))
 
