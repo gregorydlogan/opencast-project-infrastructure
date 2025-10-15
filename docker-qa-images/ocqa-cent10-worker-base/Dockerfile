@@ -112,6 +112,13 @@ RUN yum install -y docker-ce-cli && \
     yum clean all && \
     groupdel docker
 
+COPY opencast.repo /etc/yum.repos.d/opencast.repo
+COPY install-ffmpeg.sh /builder/install-ffmpeg.sh
+RUN chmod 755 /builder/install-ffmpeg.sh
+
+
+FROM base as buildbot
+
     # Test runs produce a great quantity of dead grandchild processes.  In a
     # non-docker environment, these are automatically reaped by init (process 1),
     # so we need to simulate that here.  See https://github.com/Yelp/dumb-init
@@ -125,12 +132,8 @@ COPY buildbot.tac /builder/buildbot.tac
     # Install required python packages, and twisted
 RUN python3 -m pip --no-cache-dir install buildbot-worker==${VERSION}
 
-COPY opencast.repo /etc/yum.repos.d/opencast.repo
-COPY install-ffmpeg.sh /builder/install-ffmpeg.sh
-RUN chmod 755 /builder/install-ffmpeg.sh
 
-
-FROM base AS jdk21
+FROM buildbot AS jdk21
 
 RUN yum install -y \
         --disablerepo="opencast" --disablerepo="opencast-noarch" \

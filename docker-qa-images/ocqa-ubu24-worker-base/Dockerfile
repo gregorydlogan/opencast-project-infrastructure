@@ -115,6 +115,13 @@ RUN python3 -m pip --no-cache-dir install vosk vosk-cli webvtt-py --break-system
 RUN apt-get install -y docker-ce-cli && \
     apt-get clean
 
+COPY opencast.list /etc/apt/sources.list.d
+COPY install-ffmpeg.sh /builder/install-ffmpeg.sh
+RUN chmod 755 /builder/install-ffmpeg.sh
+
+
+FROM base as buildbot
+
     # Test runs produce a great quantity of dead grandchild processes.  In a
     # non-docker environment, these are automatically reaped by init (process 1),
     # so we need to simulate that here.  See https://github.com/Yelp/dumb-init
@@ -130,11 +137,8 @@ COPY buildbot.tac /builder/buildbot.tac
     # Install required python packages, and twisted
 RUN python3 -m pip --no-cache-dir install future buildbot-worker==${VERSION} --break-system-packages
 
-COPY opencast.list /etc/apt/sources.list.d
-COPY install-ffmpeg.sh /builder/install-ffmpeg.sh
-RUN chmod 755 /builder/install-ffmpeg.sh
 
-FROM base AS jdk17
+FROM buildbot AS jdk17
 
 RUN apt-get install -y \
         openjdk-17-jre \
@@ -145,7 +149,7 @@ RUN apt-get install -y \
     apt-get clean
 
 
-FROM base AS jdk21
+FROM buildbot AS jdk21
 
 RUN apt-get install -y \
         openjdk-21-jre \
