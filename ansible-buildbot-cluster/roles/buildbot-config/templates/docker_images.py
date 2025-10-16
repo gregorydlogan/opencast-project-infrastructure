@@ -304,7 +304,7 @@ class Docker():
         #Triggerable scheduler to catch the above trigger steps
         builders.append(util.BuilderConfig(
             name="ocqa worker build",
-            collapseRequests=True,
+            collapseRequests=False, #This needs to be False, or else some of the builds will randomly just not happen
             workernames=self.props['workernames'],
             factory=self.getPushPipeline()))
 
