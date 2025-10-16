@@ -16,11 +16,12 @@ ls | grep worker-base | cut -f 2 -d "-" | while read image
 do
   pushd . 2>&1 > /dev/null
   cd ocqa-$image-worker-base
-  docker build . --pull --build-arg VERSION="$BUILDBOT_VERSION" --build-arg BUILD_DATE="$BUILD_DATE" --target base -t $DOCKER_OWNER/ocqa-$image-worker-base:$DOCKER_TAG
-  grep "AS jdk" Dockerfile | cut -f 4 -d " " | while read jdk
+  grep 'FROM .* AS' Dockerfile | sed 's/.* AS \(.*\)/\1/g' | while read subimage
   do
-    docker build . --build-arg VERSION="$BUILDBOT_VERSION" --build-arg BUILD_DATE="$BUILD_DATE" --target $jdk -t $DOCKER_OWNER/ocqa-$image-worker-base-$jdk:$DOCKER_TAG
+    docker build . --pull --build-arg VERSION="$BUILDBOT_VERSION" --build-arg BUILD_DATE="$BUILD_DATE" --target $subimage -t $DOCKER_OWNER/ocqa-$image-worker-base-$subimage:$DOCKER_TAG
   done
+  #Special handling, retag the -base-base image as -base
+  docker tag $DOCKER_OWNER/ocqa-$image-worker-base-base:$DOCKER_TAG $DOCKER_OWNER/ocqa-$image-worker-base:$DOCKER_TAG
   popd  2>&1 > /dev/null
 done
 cd ocqa-buildbot-master
