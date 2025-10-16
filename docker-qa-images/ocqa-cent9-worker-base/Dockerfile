@@ -3,7 +3,6 @@ FROM quay.io/centos/centos:stream9 AS base
 #Needed to work around pip bug: https://githubmemory.com/repo/pypa/pip/issues/10219
 ARG LANG=en_US.UTF-8
 ARG LC_ALL=en_US.UTF-8
-ARG VERSION=unknown
 ARG BUILD_DATE=unknown
 
 
@@ -118,6 +117,8 @@ RUN chmod 755 /builder/install-ffmpeg.sh
 
 
 FROM base as buildbot
+
+ARG VERSION=unknown
 
     # Test runs produce a great quantity of dead grandchild processes.  In a
     # non-docker environment, these are automatically reaped by init (process 1),

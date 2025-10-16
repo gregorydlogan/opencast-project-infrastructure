@@ -3,7 +3,6 @@ FROM debian:11 AS base
 #Needed to work around pip bug: https://githubmemory.com/repo/pypa/pip/issues/10219
 ARG LANG=C.UTF-8
 ARG LC_ALL=C.UTF-8
-ARG VERSION=unknown
 ARG BUILD_DATE=unknown
 
 # This will make apt-get install without question
@@ -119,6 +118,8 @@ RUN chmod 755 /builder/install-ffmpeg.sh
 
 
 FROM base as buildbot
+
+ARG VERSION=unknown
 
     # Test runs produce a great quantity of dead grandchild processes.  In a
     # non-docker environment, these are automatically reaped by init (process 1),
