@@ -1,4 +1,4 @@
-FROM debian:13 AS base
+FROM debian:13 AS core
 
 #Needed to work around pip bug: https://githubmemory.com/repo/pypa/pip/issues/10219
 ARG LANG=C.UTF-8
@@ -115,7 +115,7 @@ COPY install-ffmpeg.sh /builder/install-ffmpeg.sh
 RUN chmod 755 /builder/install-ffmpeg.sh
 
 
-FROM base as buildbot
+FROM core AS base
 
 ARG VERSION=unknown
 
@@ -134,7 +134,7 @@ RUN python3 -m pip --no-cache-dir install future buildbot-worker==${VERSION} --b
 
 
 
-FROM buildbot AS jdk21
+FROM base AS jdk21
 
 RUN apt-get install -y \
         openjdk-21-jre \

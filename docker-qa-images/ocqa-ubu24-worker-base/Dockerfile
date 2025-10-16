@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS base
+FROM ubuntu:24.04 AS core
 
 #Needed to work around pip bug: https://githubmemory.com/repo/pypa/pip/issues/10219
 ARG LANG=C.UTF-8
@@ -119,7 +119,7 @@ COPY install-ffmpeg.sh /builder/install-ffmpeg.sh
 RUN chmod 755 /builder/install-ffmpeg.sh
 
 
-FROM base as buildbot
+FROM core AS base
 
 ARG VERSION=unknown
 
@@ -139,7 +139,7 @@ COPY buildbot.tac /builder/buildbot.tac
 RUN python3 -m pip --no-cache-dir install future buildbot-worker==${VERSION} --break-system-packages
 
 
-FROM buildbot AS jdk17
+FROM base AS jdk17
 
 RUN apt-get install -y \
         openjdk-17-jre \
@@ -150,7 +150,7 @@ RUN apt-get install -y \
     apt-get clean
 
 
-FROM buildbot AS jdk21
+FROM base AS jdk21
 
 RUN apt-get install -y \
         openjdk-21-jre \
