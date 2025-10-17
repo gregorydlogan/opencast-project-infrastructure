@@ -4,9 +4,7 @@ DOCKER_OWNER=s3.loganite.ca
 DOCKER_TAG=latest
 BUILDBOT_VERSION="v4.3.0"
 
-set -uxe
-
-cd ocqa-fallback-worker-base
+cd ocqa-fallback
 docker build . --build-arg VERSION="$BUILDBOT_VERSION" -t $DOCKER_OWNER/ocqa-fallback:$DOCKER_TAG
 cd ..
 
