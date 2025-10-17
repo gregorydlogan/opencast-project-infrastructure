@@ -23,9 +23,9 @@ ls | grep worker-base | cut -f 2 -d "-" | while read image
 do
   pushd . 2>&1 > /dev/null
   docker tag $DOCKER_SOURCE/ocqa-$image-worker-base:latest $DOCKER_OWNER/ocqa-$image-worker-base:$DOCKER_TAG
-  grep "AS jdk" ocqa-$image-worker-base/Dockerfile | cut -f 4 -d " " | while read jdk
+  grep "FROM .* AS .*" ocqa-$image-worker-base/Dockerfile | cut -f 4 -d " " | while read subimage
   do
-  docker tag $DOCKER_SOURCE/ocqa-$image-worker-base-$jdk:latest $DOCKER_OWNER/ocqa-$image-worker-base-$jdk:$DOCKER_TAG
+  docker tag $DOCKER_SOURCE/ocqa-$image-worker-base-$subimage:latest $DOCKER_OWNER/ocqa-$image-worker-base-$subimage:$DOCKER_TAG
   done
   popd  2>&1 > /dev/null
 done

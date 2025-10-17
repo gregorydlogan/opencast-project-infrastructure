@@ -18,9 +18,9 @@ do
   pushd . 2>&1 > /dev/null
   cd ocqa-$image-worker-base
   docker push $DOCKER_OWNER/ocqa-$image-worker-base:$DOCKER_TAG
-  grep "AS jdk" Dockerfile | cut -f 4 -d " " | while read jdk
+  grep "FROM .* AS .*" Dockerfile | cut -f 4 -d " " | while read subimage
   do
-    docker push $DOCKER_OWNER/ocqa-$image-worker-base-$jdk:$DOCKER_TAG
+    docker push $DOCKER_OWNER/ocqa-$image-worker-base-$subimage:$DOCKER_TAG
   done
   popd 2>&1 > /dev/null
 done
