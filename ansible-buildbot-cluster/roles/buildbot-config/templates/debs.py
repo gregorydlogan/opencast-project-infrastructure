@@ -556,6 +556,10 @@ class Debs():
                 flunkOnFailure=True,
                 haltOnFailure=True,
                 name="Set pkg_version property"))
+
+        self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
+        self.publishRepo(f_package_debs, s3_target="s3:loganite:")
+
         if buildType in [ "tobira", "whisper" ]:
             for branch in [ {% for branch in opencast.keys() %}{% if "Develop" != branch %}"{{ opencast[branch]['pom'] }}", {% endif %}{% endfor %} ]:
                 f_package_debs.addStep(
@@ -586,10 +590,17 @@ class Debs():
                         flunkOnFailure=True,
                         haltOnFailure=True,
                         name="Set to_component property"))
+                f_package_debs.addStep(
+                    steps.SetProperty(
+                        property="pkg_major_version",
+                        value=util.Interpolate("%(prop:pkg_major_version)s"),
+                        flunkOnFailure=True,
+                        haltOnFailure=True,
+                        name="Set to_component property"))
                 self.copyPackage(f_package_debs)
+                self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
+                self.publishRepo(f_package_debs, s3_target="s3:loganite:")
 
-        self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
-        self.publishRepo(f_package_debs, s3_target="s3:loganite:")
         self.notifyMatrix(f_package_debs, lite_message=lite_message)
         self.cleanup(f_package_debs)
 
