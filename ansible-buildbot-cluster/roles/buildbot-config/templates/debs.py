@@ -457,7 +457,8 @@ class Debs():
 
         f_package_debs.addStep(common.loadSigningKey("%(prop:deb_signing_key_filename)s"))
         f_package_debs.addStep(debRepoPublish)
-        f_package_debs.addStep(common.unmountS3fs("/builder/s3/repo/debs"))
+
+        return f_package_debs
 
 
     def promotePackage(self, f_package_debs):
@@ -521,6 +522,7 @@ class Debs():
 
     def cleanup(self, f_package_debs):
 
+        f_package_debs.addStep(common.unmountS3fs("/builder/s3/repo/debs"))
         f_package_debs.addStep(common.unloadSigningKey())
         f_package_debs.addStep(common.cleanupS3Secrets())
         f_package_debs.addStep(common.getClean())
