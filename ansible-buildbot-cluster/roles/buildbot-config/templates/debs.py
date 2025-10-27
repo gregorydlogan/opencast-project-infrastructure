@@ -552,7 +552,7 @@ class Debs():
         f_package_debs.addStep(
             steps.SetProperty(
                 property="pkg_version",
-                value=util.Interpolate("%(prop:pkg_version)s-1"),
+                value=util.Interpolate("%(prop:pkg_version)s-%(prop:deb_version)s"),
                 flunkOnFailure=True,
                 haltOnFailure=True,
                 name="Set pkg_version property"))
