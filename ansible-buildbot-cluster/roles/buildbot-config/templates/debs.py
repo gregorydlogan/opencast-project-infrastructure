@@ -433,7 +433,7 @@ class Debs():
             timeout=4 * 60 * 60)
 
         debRepoPrune = common.shellCommand(
-            command=["./clean-unstable-repo", util.Interpolate("%(prop:pkg_major_version)s.x"), util.Property("max_left")],
+            command=["./clean-unstable-repo", util.Interpolate("%(prop:pkg_major_version)s.x")],
             name=util.Interpolate(f"Pruning %(prop:pkg_major_version)s.x unstable repository"),
             locks=repo_lock.access('exclusive'),
             timeout=4 * 60 * 60)
