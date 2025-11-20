@@ -9,13 +9,24 @@
 opencast:
   Develop:
     branch: 'develop'
-    pom: '19'
+    pom: '20'
     jdk: [ '21' ]
     ffmpeg: 18
     profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
     el: [ ]
     cores: '1C'
     server: 'develop'
+    deb_signing_key_id: "{{ lookup('passwordstore', 'gpg/debian/id') }}"
+    deb_signing_key: "{{ lookup('passwordstore', 'gpg/debian/key', returnall=true) }}"
+  19.x:
+    branch: 'r/19.x'
+    pom: '19'
+    jdk: [ '21' ]
+    ffmpeg: 18
+    profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
+    el: [ ]
+    cores: '1C'
+    server: 'stable'
     deb_signing_key_id: "{{ lookup('passwordstore', 'gpg/debian/id') }}"
     deb_signing_key: "{{ lookup('passwordstore', 'gpg/debian/key', returnall=true) }}"
   18.x:
@@ -26,7 +37,7 @@ opencast:
     profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
     el: [ ]
     cores: '1C'
-    server: 'stable'
+    server: 'legacy'
     deb_signing_key_id: "{{ lookup('passwordstore', 'gpg/debian/id') }}"
     deb_signing_key: "{{ lookup('passwordstore', 'gpg/debian/key', returnall=true) }}"
   17.x:
@@ -37,7 +48,6 @@ opencast:
     profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
     el: [ ]
     cores: '1C'
-    server: 'legacy'
     deb_signing_key_id: "{{ lookup('passwordstore', 'gpg/debian/id') }}"
     deb_signing_key: "{{ lookup('passwordstore', 'gpg/debian/key', returnall=true) }}"
 
