@@ -595,10 +595,10 @@ class Debs():
                 f_package_debs.addStep(
                     steps.SetProperty(
                         property="pkg_major_version",
-                        value=util.Interpolate("%(prop:pkg_major_version)s"),
+                        value=f"{ branch }", #NB: This needs to be *without* the .x
                         flunkOnFailure=True,
                         haltOnFailure=True,
-                        name="Set to_component property"))
+                        name=f"Prop pkg_major_version: { branch }"))
                 self.copyPackage(f_package_debs)
                 self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
                 self.publishRepo(f_package_debs, s3_target="s3:loganite:")
