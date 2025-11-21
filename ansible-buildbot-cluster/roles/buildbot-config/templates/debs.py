@@ -563,35 +563,35 @@ class Debs():
         self.publishRepo(f_package_debs, s3_target="s3:loganite:")
 
         if buildType in [ "tobira", "whisper" ]:
+            f_package_debs.addStep(
+                steps.SetProperty(
+                    property="from_branch",
+                    value=util.Interpolate("%(prop:pkg_major_version)s"),
+                    flunkOnFailure=True,
+                    haltOnFailure=True,
+                    name=util.Interpolate("Prop from_branch: %(prop:pkg_major_version)s")))
+            f_package_debs.addStep(
+                steps.SetProperty(
+                    property="from_component",
+                    value="stable",
+                    flunkOnFailure=True,
+                    haltOnFailure=True,
+                    name="Prop from_component: stable"))
+            f_package_debs.addStep(
+                steps.SetProperty(
+                    property="to_component",
+                    value="stable",
+                    flunkOnFailure=True,
+                    haltOnFailure=True,
+                    name="Prop to_component: stable"))
             for branch in [ {% for branch in opencast.keys() %}{% if "Develop" != branch %}"{{ opencast[branch]['pom'] }}", {% endif %}{% endfor %} ]:
-                f_package_debs.addStep(
-                    steps.SetProperty(
-                        property="from_branch",
-                        value=util.Interpolate("%(prop:pkg_major_version)s"),
-                        flunkOnFailure=True,
-                        haltOnFailure=True,
-                        name="Set from_branch property"))
                 f_package_debs.addStep(
                     steps.SetProperty(
                         property="to_branch",
                         value=branch,
                         flunkOnFailure=True,
                         haltOnFailure=True,
-                        name="Set to_branch property"))
-                f_package_debs.addStep(
-                    steps.SetProperty(
-                        property="from_component",
-                        value="stable",
-                        flunkOnFailure=True,
-                        haltOnFailure=True,
-                        name="Set from_component property"))
-                f_package_debs.addStep(
-                    steps.SetProperty(
-                        property="to_component",
-                        value="stable",
-                        flunkOnFailure=True,
-                        haltOnFailure=True,
-                        name="Set to_component property"))
+                        name=f"Prop to_branch: { branch }"))
                 f_package_debs.addStep(
                     steps.SetProperty(
                         property="pkg_major_version",
@@ -602,6 +602,13 @@ class Debs():
                 self.copyPackage(f_package_debs)
                 self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
                 self.publishRepo(f_package_debs, s3_target="s3:loganite:")
+            f_package_debs.addStep(
+                steps.SetProperty(
+                    property="pkg_major_version",
+                    value=util.Interpolate("%(prop:from_branch)s"),
+                    flunkOnFailure=True,
+                    haltOnFailure=True,
+                    name=util.Interpolate("Reset pkg_major_version: %(prop:from_branch)s")))
 
         self.notifyMatrix(f_package_debs, lite_message=lite_message)
         self.cleanup(f_package_debs)
