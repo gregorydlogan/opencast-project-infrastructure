@@ -756,6 +756,7 @@ class Debs():
 
         prod_props = dict(deb_props)
         prod_props['release_build'] = 'true'
+        prod_props['pkg_name'] = 'opencast'
 
         builders.append(util.BuilderConfig(
             name=self.pretty_branch_name + " Deb Publish",
