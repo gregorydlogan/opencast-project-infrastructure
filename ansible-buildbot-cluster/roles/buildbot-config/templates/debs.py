@@ -390,7 +390,7 @@ class Debs():
             flunkOnFailure=False,
             name="Notifying the Releases room",
             doStepIf=lambda step: message != "" and step.getProperty("pkg_name") == "opencast",
-            hideStepIf=message == "")
+            hideStepIf=lambda _, step: message == "")
 
         notifyMatrixLite = common.notifyMatrix(
             message=lite_message,
@@ -400,7 +400,7 @@ class Debs():
             flunkOnFailure=False,
             name="Notifying the LITE Releases room",
             doStepIf=lambda step: lite_message != "" and step.getProperty("pkg_name") == "opencast",
-            hideStepIf=lite_message == "")
+            hideStepIf=lambda _, step: lite_message == "")
 
         f_package_debs.addStep(notifyMatrix)
         f_package_debs.addStep(notifyMatrixLite)
