@@ -268,6 +268,47 @@ class Debs():
         f_package_debs.addStep(common.unloadSigningKey())
 
 
+    def addOctokaBuild(self, f_package_debs):
+
+        removeSymlinks = common.shellCommand(
+            command=['rm', '-rf', 'outputs'],
+            name="Prep cloned repo for CI use")
+
+        fetchOctokaFromGitHub = common.shellCommand(
+            command=["./octoka-fetch.sh", util.Interpolate("%(prop:pkg_version)s")],
+            workdir="build/binaries",
+            name="Fetch octoka release build from GitHub")
+
+        buildOctoka = common.shellSequence(
+            commands=[
+                common.shellArg(
+                    command=util.Interpolate(
+                        'echo "source library.sh\nSIGNING_KEY=%(prop:signing_key_id)s doOctoka %(prop:pkg_version)s %(prop:branch)s %(prop:deb_version)s" | tee build.sh'
+                    ),
+                    logname='write'),
+                common.shellArg(
+                    command=['bash', 'build.sh'],
+                    logname='build')
+            ],
+            env={
+                "NAME": "Buildbot",
+                "EMAIL": "buildbot@{{ groups['master'][0] }}",
+                "SIGNING_KEY": util.Interpolate("%(prop:deb_signing_key_id)s")
+            },
+            name="Build octoka")
+
+        f_package_debs.addStep(common.getPreflightChecks())
+        f_package_debs.addStep(self.debsClone)
+        f_package_debs.addStep(self.debsVersion)
+        f_package_debs.addStep(removeSymlinks)
+        f_package_debs.addStep(fetchOctokaFromGitHub)
+        #NB: This can be either the default, or the per-branch depending on the *buidler* below
+        f_package_debs.addStep(common.loadSigningKey())
+        f_package_debs.addStep(buildOctoka)
+        #We unload here since we *might* be using a different key in a minute to sign the actual repo
+        f_package_debs.addStep(common.unloadSigningKey())
+
+
     def addWhisperBuild(self, f_package_debs):
 
         removeSymlinks = common.shellCommand(
@@ -537,6 +578,8 @@ class Debs():
             self.addFfmpegBuild(f_package_debs)
         elif "tobira" == buildType:
             self.addTobiraBuild(f_package_debs)
+        elif "octoka" == buildType:
+            self.addOctokaBuild(f_package_debs)
         elif "whisper" == buildType:
             self.addWhisperBuild(f_package_debs)
         else:
@@ -562,7 +605,7 @@ class Debs():
         self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
         self.publishRepo(f_package_debs, s3_target="s3:loganite:")
 
-        if buildType in [ "tobira", "whisper" ]:
+        if buildType in [ "tobira", "octoka", "whisper" ]:
             f_package_debs.addStep(
                 steps.SetProperty(
                     property="from_branch",
@@ -819,7 +862,7 @@ class Debs():
                 locks=[lock.access('exclusive')]))
 
             #We only provide this for develop.  Use the promote/copy builder to spread the resulting files around
-            for buildtype in [ "ffmpeg", "tobira", "whisper" ]:
+            for buildtype in [ "ffmpeg", "tobira", "octoka", "whisper" ]:
                 util_props = dict(prod_props) | {"repo_component": "stable", "pkg_name": buildtype}
                 if buildtype == "ffmpeg":
                     util_props["repo_component"] = "testing"
@@ -890,7 +933,7 @@ class Debs():
 
         else:
             # We only provide this for develop.  Use the promote/copy builder to spread the resulting files around
-            for buildtype in ["ffmpeg", "tobira", "whisper"]:
+            for buildtype in ["ffmpeg", "tobira", "octoka", "whisper"]:
                 toolparams = [
                     util.FixedParameter(
                         name="pkg_name",
