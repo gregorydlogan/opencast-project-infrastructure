@@ -604,6 +604,7 @@ class Debs():
 
         self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
         self.publishRepo(f_package_debs, s3_target="s3:loganite:")
+        self.notifyMatrix(f_package_debs, lite_message=lite_message)
 
         if buildType in [ "tobira", "octoka", "whisper" ]:
             f_package_debs.addStep(
@@ -645,6 +646,7 @@ class Debs():
                 self.copyPackage(f_package_debs)
                 self.snapshotCleanup(f_package_debs, s3_target="s3:loganite:")
                 self.publishRepo(f_package_debs, s3_target="s3:loganite:")
+                self.notifyMatrix(f_package_debs, lite_message=lite_message)
             f_package_debs.addStep(
                 steps.SetProperty(
                     property="pkg_major_version",
@@ -653,7 +655,6 @@ class Debs():
                     haltOnFailure=True,
                     name=util.Interpolate("Reset pkg_major_version: %(prop:from_branch)s")))
 
-        self.notifyMatrix(f_package_debs, lite_message=lite_message)
         self.cleanup(f_package_debs)
 
         return f_package_debs
