@@ -240,17 +240,9 @@ class Markdown():
             haltOnFailure=True,
             flunkOnFailure=True)
 
-        updateMarkdown = steps.MasterShellCommand(
-            command=util.Interpolate(
-                "rm -f {{ deployed_markdown_symlink }} && ln -s {{ deployed_markdown }} {{ deployed_markdown_symlink }}"
-            ),
-            flunkOnFailure=True,
-            name="Deploy Markdown")
-
         f_build = self.__getBasePipeline()
         f_build.addStep(compress)
         f_build.addStep(upload)
-        #f_build.addStep(updateMarkdown)
         f_build.addStep(common.getClean())
 
         return f_build
