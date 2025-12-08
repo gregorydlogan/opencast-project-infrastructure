@@ -105,22 +105,9 @@ class Reports():
             pathTo="s3://{{ s3_public_bucket }}/builds/{{ reports_fragment }}",
             name="Upload site report to S3")
 
-        updateSite = steps.MasterShellCommand(
-            command=util.Interpolate(
-                "ln -s {{ deployed_reports }}/apidocs {{ deployed_javadocs }} && \
-                ln -s {{ deployed_reports }}/cobertura {{ deployed_coverage }} && \
-                rm -f {{ deployed_reports_symlink }} {{ deployed_javadocs_symlink }} {{ deployed_coverage_symlink }} && \
-                ln -s {{ deployed_reports }} {{ deployed_reports_symlink }} && \
-                ln -s {{ deployed_javadocs }} {{ deployed_javadocs_symlink }} && \
-                ln -s {{ deployed_coverage }} {{ deployed_coverage_symlink }}"
-            ),
-            flunkOnFailure=True,
-            name="Deploy Reports")
-
         f_build = self.__getBasePipeline()
         f_build.addStep(compressSite)
         f_build.addStep(uploadSite)
-        #f_build.addStep(updateSite)
         f_build.addStep(common.getClean())
 
         return f_build
