@@ -95,8 +95,8 @@ class Debs():
         debsSetPkgVersion = steps.SetProperty(
             property="pkg_version",
             value=util.Interpolate("%(prop:branch)s"),
-            doStepIf=lambda step: step.getProperty("release_build", default="false") == "true" and step.getProperty("pkg_version", default="") != "",
-            hideStepIf=lambda _, step: step.getProperty("release_build", default="false") == "false" or step.getProperty("pkg_version", default="") == "",
+            doStepIf=lambda step: step.getProperty("release_build", default="false") == "true" and step.getProperty("pkg_version", default="") == "",
+            hideStepIf=lambda _, step: step.getProperty("release_build", default="false") == "false" or step.getProperty("pkg_version", default="") != "",
             name="Calculate expected build version")
 
         # This sets pkg_version for non-release builds
