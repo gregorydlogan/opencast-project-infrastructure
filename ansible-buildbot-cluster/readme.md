@@ -17,9 +17,8 @@ Requires:
 Deploying Opencast's setup
 ==========================
 
-These playbooks make use of `passwordstore` lookups, so make sure you have access to our credentials, and a local copy.
-Unless your default `PASSWORD\_STORE\_DIR` environment variable points at that copy, you will need to modify the
-command above to look like `PASSWORD\_STORE\_DIR=~/opencast/opencast-accounts ansible-playbook...`
+These playbooks make use of Ansible vault encrypted secrets.  Use the `vault-keyring-client.sh` file when deploying
+or editing secrets.
 
 Deploying Secrets to S3
 -----------------------

@@ -9,15 +9,26 @@
 opencast:
   Develop:
     branch: 'develop'
-    pom: '20'
+    pom: '21'
     jdk: [ '21' ]
     ffmpeg: 18
     profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
     el: [ ]
     cores: '1C'
     server: 'develop'
-    deb_signing_key_id: "{{ lookup('passwordstore', 'gpg/debian/id') }}"
-    deb_signing_key: "{{ lookup('passwordstore', 'gpg/debian/key', returnall=true) }}"
+    deb_signing_key_id: "3259FFB3967266533FCD4B249A7EA8E5B3820B26"
+    deb_signing_key: "{{ vault_all_deb_signing_key }}"
+  20.x:
+    branch: 'r/20.x'
+    pom: '20'
+    jdk: [ '21' ]
+    ffmpeg: 18
+    profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
+    el: [ ]
+    cores: '1C'
+    server: 'stable'
+    deb_signing_key_id: "3259FFB3967266533FCD4B249A7EA8E5B3820B26"
+    deb_signing_key: "{{ vault_all_deb_signing_key }}"
   19.x:
     branch: 'r/19.x'
     pom: '19'
@@ -26,30 +37,9 @@ opencast:
     profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
     el: [ ]
     cores: '1C'
-    server: 'stable'
-    deb_signing_key_id: "{{ lookup('passwordstore', 'gpg/debian/id') }}"
-    deb_signing_key: "{{ lookup('passwordstore', 'gpg/debian/key', returnall=true) }}"
-  18.x:
-    branch: 'r/18.x'
-    pom: '18'
-    jdk: [ '21' ]
-    ffmpeg: 18
-    profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
-    el: [ ]
-    cores: '1C'
     server: 'legacy'
-    deb_signing_key_id: "{{ lookup('passwordstore', 'gpg/debian/id') }}"
-    deb_signing_key: "{{ lookup('passwordstore', 'gpg/debian/key', returnall=true) }}"
-  17.x:
-    branch: 'r/17.x'
-    pom: '17'
-    jdk: [ '17', '21' ]
-    ffmpeg: 17
-    profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
-    el: [ ]
-    cores: '1C'
-    deb_signing_key_id: "{{ lookup('passwordstore', 'gpg/debian/id') }}"
-    deb_signing_key: "{{ lookup('passwordstore', 'gpg/debian/key', returnall=true) }}"
+    deb_signing_key_id: "3259FFB3967266533FCD4B249A7EA8E5B3820B26"
+    deb_signing_key: "{{ vault_all_deb_signing_key }}"
 
 
 #########################
