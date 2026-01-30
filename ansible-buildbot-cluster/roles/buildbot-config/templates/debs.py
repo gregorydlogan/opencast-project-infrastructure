@@ -553,7 +553,7 @@ class Debs():
                 },
                 doStepIf=lambda step: step.getProperty("release_build", default="false") == "true",
                 locks=repo_lock.access('exclusive'),
-                timeout=1200)
+                timeout=2400)
 
         #NB: We mount LITE's published file so we can sync between that and rados
         self.mountS3(f_package_debs, host="published")
