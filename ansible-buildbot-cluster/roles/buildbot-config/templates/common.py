@@ -157,6 +157,14 @@ def getClone(name="Clone/Checkout", url="{{ source_repo_url }}", branch=None):
     else:
         return steps.Git(**args)
 
+def getSubmodules():
+    return shellCommand(
+                command=['git', 'submodule', 'update', '--init', '--recursive'],
+                name="Loading submodules",
+                env=getMavenEnv,
+                haltOnFailure=True,
+                flunkOnFailure=True)
+
 
 def getWorkerPrep():
     commandsAry = [

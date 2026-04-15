@@ -72,6 +72,7 @@ class Reports():
         f_build = util.BuildFactory()
         f_build.addStep(common.getPreflightChecks())
         f_build.addStep(common.getClone())
+        f_build.addStep(common.getSubmodules())
         f_build.addStep(common.getWorkerPrep())
         f_build.addStep(common.setTimezone())
         f_build.addStep(common.setLocale())
