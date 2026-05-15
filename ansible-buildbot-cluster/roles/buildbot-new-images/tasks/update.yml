@@ -12,7 +12,7 @@
     loop_var: jdk
 
 - name: Finding all built {{ distro }} worker images
-  shell: docker images -q {{ hostvars[inventory_hostname]['name'] }}_*
+  shell: docker images -q {{ hostvars[inventory_hostname]['buildbot_name'] }}_*
   become: yes
   register: worker_images
 
