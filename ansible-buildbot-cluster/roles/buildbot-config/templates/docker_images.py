@@ -200,7 +200,7 @@ class Docker():
             name=util.Interpolate("Logging into %(prop:docker_host)s"))
 
     dockerLoginUpstream = common.shellCommand(
-            command=["docker", "login", "-u", util.Secret("greglogan-docker-user"), "-p", util.Secret("greglogan-docker-pass")],
+            command=["docker", "login", "-u", util.Secret("docker-user"), "-p", util.Secret("docker-pass")],
             doStepIf=lambda step: "greglogan" != step.getProperty("docker_host"),
             hideStepIf=lambda _, step: "greglogan" == step.getProperty("docker_host"),
             name="Logging into Dockerhub")

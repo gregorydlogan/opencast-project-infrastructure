@@ -146,8 +146,8 @@
     - { src: "secrets/s3.public_secret_key", dest: "{{ buildbot_secrets_master }}/s3.public_secret_key" }
     - { src: "secrets/s3.private_access_key", dest: "{{ buildbot_secrets_master }}/s3.private_access_key" }
     - { src: "secrets/s3.private_secret_key", dest: "{{ buildbot_secrets_master }}/s3.private_secret_key" }
-    #- { src: "secrets/greglogan-docker-user", dest: "{{ buildbot_secrets_master }}/greglogan-docker-user" }
-    #- { src: "secrets/greglogan-docker-pass", dest: "{{ buildbot_secrets_master }}/greglogan-docker-pass" }
+    #- { src: "secrets/docker-user", dest: "{{ buildbot_secrets_master }}/docker-user" }
+    #- { src: "secrets/docker-pass", dest: "{{ buildbot_secrets_master }}/docker-pass" }
 
 
   #The following files then get uploaded to S3 next
