@@ -9,7 +9,7 @@
     - { role: s3-server, when: "hostvars[inventory_hostname]['deploy_s3_server'] | bool" }
 
 - hosts: buildbot
-  gather_facts: false
+  gather_facts: true
   user: "{{ login_user }}"
   roles:
     - { role: buildbot-base }
