@@ -83,11 +83,19 @@ docker_jdk:
     - "deb13"
     - "ubu22"
     - "ubu24"
+    - "ubu26"
+    - "cent9"
+    - "cent10"
+  25:
+    - "deb13"
+    - "ubu22"
+    - "ubu24"
+    - "ubu26"
     - "cent9"
     - "cent10"
 
 #The list of possible Debian based distro images
-docker_debian_worker_images: ["deb13", "ubu22", "ubu24"]
+docker_debian_worker_images: ["deb13", "ubu22", "ubu24", "ubu26"]
 
 #The list of possible CentOS based distro images
 docker_centos_worker_images: ["cent9", "cent10"]

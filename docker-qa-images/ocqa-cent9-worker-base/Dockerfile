@@ -143,3 +143,14 @@ RUN yum install -y \
     #Do this after to prevent installing the default jdk
     yum install -y \
         maven
+
+
+FROM base AS jdk25
+
+RUN yum install -y \
+        --disablerepo="opencast" --disablerepo="opencast-noarch" \
+        java-25-openjdk \
+        java-25-openjdk-devel && \
+    #Do this after to prevent installing the default jdk
+    yum install -y \
+        maven

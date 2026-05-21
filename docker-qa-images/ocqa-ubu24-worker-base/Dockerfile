@@ -148,3 +148,14 @@ RUN apt-get install -y \
     apt-get install -y \
         maven && \
     apt-get clean
+
+
+FROM base AS jdk25
+
+RUN apt-get install -y \
+        openjdk-25-jre \
+        openjdk-25-jdk && \
+    #Do this after to prevent installing the default jdk
+    apt-get install -y \
+        maven && \
+    apt-get clean

@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS core
+FROM ubuntu:26.04 AS core
 
 #Needed to work around pip bug: https://githubmemory.com/repo/pypa/pip/issues/10219
 ARG LANG=C.UTF-8
@@ -9,8 +9,8 @@ ARG BUILD_DATE=unknown
 ARG         DEBIAN_FRONTEND=noninteractive
 
 LABEL org.opencontainers.image.authors="Greg Logan <gregorydlogan@gmail.com>" \
-      org.opencontainers.image.title="Opencast QA Ubuntu 22.04 Image" \
-      org.opencontainers.image.description="Opencast QA image based on an Ubuntu 22.04 environment" \
+      org.opencontainers.image.title="Opencast QA Ubuntu 26.04 Image" \
+      org.opencontainers.image.description="Opencast QA image based on an Ubuntu 26.04 environment" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Opencast" \
       org.opencontainers.image.authors="Greg Logan <gregorydlogan@gmail.com>" \
@@ -43,7 +43,7 @@ RUN add-apt-repository -y ppa:mozillateam/ppa && \
         locales \
      # Run deps
         tesseract-ocr \
-        netcat \
+        netcat-openbsd \
         sox \
         hunspell \
      # Build deps
@@ -96,14 +96,12 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     sed -i -e 's/# fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
 
-RUN python3 -m pip --no-cache-dir install --upgrade pip
-RUN python3 -m pip --no-cache-dir install --upgrade setuptools
     # Ansible deploy bits
-RUN python3 -m pip --no-cache-dir install ansible paramiko
+RUN python3 -m pip --no-cache-dir install ansible paramiko --break-system-packages
     # Buildbot s3 deploy bits
-RUN python3 -m pip --no-cache-dir install awscli
+RUN python3 -m pip --no-cache-dir install awscli --break-system-packages
     # Vosk and vosk-cli
-RUN python3 -m pip --no-cache-dir install vosk vosk-cli webvtt-py && \
+RUN python3 -m pip --no-cache-dir install vosk vosk-cli webvtt-py --break-system-packages && \
     mkdir -p /usr/share/vosk/models && \
     wget https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip -O /usr/share/vosk/models/vosk-model-small-en-us-0.15.zip && \
     unzip /usr/share/vosk/models/vosk-model-small-en-us-0.15.zip -d /usr/share/vosk/models/ && \
@@ -133,10 +131,12 @@ RUN curl -Lo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases
 
 #Allow buildbot to install packages (ffmpeg) later
 RUN echo "buildbot ALL = (root) NOPASSWD : /usr/bin/apt-get, /usr/bin/yum, /usr/local/bin/dumb-init, /bin/sed" > /etc/sudoers.d/buildbot
+#Remove the default ubuntu user, which is colliding with the buildbot user
+RUN deluser ubuntu && rm -rf /home/ubuntu
 
 COPY buildbot.tac /builder/buildbot.tac
     # Install required python packages, and twisted
-RUN python3 -m pip --no-cache-dir install future buildbot-worker==${VERSION}
+RUN python3 -m pip --no-cache-dir install future buildbot-worker==${VERSION} --break-system-packages
 
 
 FROM base AS jdk21
