@@ -134,28 +134,6 @@ COPY buildbot.tac /builder/buildbot.tac
 RUN python3 -m pip --no-cache-dir install buildbot-worker==${VERSION}
 
 
-FROM base AS jdk11
-
-RUN yum install -y \
-        --disablerepo="opencast" --disablerepo="opencast-noarch" \
-        java-11-openjdk \
-        java-11-openjdk-devel && \
-    #Do this after to prevent installing the default jdk
-    yum install -y \
-        maven
-
-
-FROM base AS jdk17
-
-RUN yum install -y \
-        --disablerepo="opencast" --disablerepo="opencast-noarch" \
-        java-17-openjdk \
-        java-17-openjdk-devel && \
-    #Do this after to prevent installing the default jdk
-    yum install -y \
-        maven
-
-
 FROM base AS jdk21
 
 RUN yum install -y \

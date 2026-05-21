@@ -79,13 +79,6 @@ docker_worker_image_tag: "{{ docker_image_tag }}"
 docker_worker_base_image: "worker-base"
 
 docker_jdk:
-  11:
-    - "ubu22"
-    - "cent9"
-  17:
-    - "ubu22"
-    - "ubu24"
-    - "cent9"
   21:
     - "deb13"
     - "ubu22"

@@ -139,28 +139,6 @@ COPY buildbot.tac /builder/buildbot.tac
 RUN python3 -m pip --no-cache-dir install future buildbot-worker==${VERSION}
 
 
-FROM base AS jdk11
-
-RUN apt-get install -y \
-        openjdk-11-jre \
-        openjdk-11-jdk && \
-    #Do this after to prevent installing the default jdk
-    apt-get install -y \
-        maven && \
-    apt-get clean
-
-
-FROM base AS jdk17
-
-RUN apt-get install -y \
-        openjdk-17-jre \
-        openjdk-17-jdk && \
-    #Do this after to prevent installing the default jdk
-    apt-get install -y \
-        maven && \
-    apt-get clean
-
-
 FROM base AS jdk21
 
 RUN apt-get install -y \
