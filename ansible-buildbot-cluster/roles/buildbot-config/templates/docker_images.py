@@ -126,8 +126,8 @@ class GeneratePerImageBuilds(buildstep.ShellMixin, steps.BuildStep):
                             command=["docker", "tag",
                                 util.Interpolate("%(prop:docker_host)s/%(prop:fdnwj)s:latest"),
                                 util.Interpolate("greglogan/%(prop:fdnwj)s:latest")],
-                            doStepIf="greglogan" != util.Property("docker_host"),
-                            hideStepIf="greglogan" == util.Property("docker_host"),
+                            doStepIf=lambda step: step.getProperty("docker_host", default="greglogan") != "greglogan",
+                            hideStepIf=lambda _, step: step.getProperty("docker_host", default="greglogan") == "greglogan",
                             name=util.Interpolate(f"Tagging %(prop:docker_image)s { target } latest upstream")),
                     lambda target:
                         common.shellCommand(
@@ -138,8 +138,8 @@ class GeneratePerImageBuilds(buildstep.ShellMixin, steps.BuildStep):
                         common.shellCommand(
                             command=["docker", "push", util.Interpolate("greglogan/%(prop:fdnwj)s:latest")],
                             timeout=240,
-                            doStepIf="greglogan" != util.Property("docker_host"),
-                            hideStepIf="greglogan" == util.Property("docker_host"),
+                            doStepIf=lambda step: step.getProperty("docker_host", default="greglogan") == "greglogan",
+                            hideStepIf=lambda _, step: step.getProperty("docker_host", default="greglogan") != "greglogan",
                             name=util.Interpolate(f"Pushing greglogan %(prop:docker_image)s { target } latest")),
                     lambda target:
                         common.shellCommand(
@@ -200,9 +200,9 @@ class Docker():
             name=util.Interpolate("Logging into %(prop:docker_host)s"))
 
     dockerLoginUpstream = common.shellCommand(
-            command=["docker", "login", "-u", util.Secret("docker-user"), "-p", util.Secret("docker-pass")],
-            doStepIf=lambda step: "greglogan" != step.getProperty("docker_host"),
-            hideStepIf=lambda _, step: "greglogan" == step.getProperty("docker_host"),
+            command=["docker", "login", "-u", util.Secret("greglogan-docker-user"), "-p", util.Secret("greglogan-docker-pass")],
+            doStepIf=lambda step: "s3.loganite.ca" != step.getProperty("docker_host"),
+            hideStepIf=lambda _, step: "s3.loganite.ca" == step.getProperty("docker_host"),
             name="Logging into Dockerhub")
 
     #FIXME: Unused?
