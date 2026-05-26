@@ -1,6 +1,6 @@
 [nodesource-nodejs]
 name=Node.js Packages for Linux RPM based distros - x86_64
-baseurl=https://rpm.nodesource.com/pub_20.x/nodistro/nodejs/x86_64
+baseurl=https://rpm.nodesource.com/pub_24.x/nodistro/nodejs/x86_64
 priority=9
 enabled=1
 gpgcheck=1
