@@ -4,7 +4,4 @@
   version: 5.0.2
 
 - src: geerlingguy.docker
-  version: 6.1.0
-
-- src: amazon.aws
-  version: 6.5.0
+  version: 8.0.0
