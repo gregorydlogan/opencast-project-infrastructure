@@ -5,3 +5,4 @@
   - "sudo"
   - "python3"
   - "acl"
+  - "jq"
