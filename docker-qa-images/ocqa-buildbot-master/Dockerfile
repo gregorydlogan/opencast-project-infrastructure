@@ -15,5 +15,5 @@ LABEL org.opencontainers.image.authors="Greg Logan <gregorydlogan@gmail.com>" \
 
 RUN /buildbot_venv/bin/pip3 --no-cache-dir install docker
 RUN /buildbot_venv/bin/pip3 --no-cache-dir install PyGitHub
-RUN /buildbot_venv/bin/pip3 --no-cache-dir install boto3
+RUN /buildbot_venv/bin/pip3 --no-cache-dir install boto3==1.17.12
 
