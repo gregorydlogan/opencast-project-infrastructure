@@ -140,13 +140,13 @@ class GenerateDeleteCommands(steps.BuildStep):
             total_size = sum([ int(remaining_prefixes[prefix]['size']) for prefix in remaining_prefixes] )
             print(f"Calculated artifacts storage size is { total_size } bytes for { len(remaining_prefixes) } prefixes")
 
-        pruning_list = sorted(remaining_prefixes, key=lambda x: (remaining_prefixes[x]['date'], remaining_prefixes[x]['size']))
-        print(f"Total size of { total_size } >= max size of { {{ max_artifacts_size | default(32)}} * 1073741824 }")
-        while total_size >= {{ max_artifacts_size | default(32)}} * 1073741824 and len(pruning_list) > 0:
-            prefix_to_prune = pruning_list.pop()
-            print(f"Pruning { prefix_to_prune } due to size limits")
-            self.clean_single_build_dir(s3, prefix_to_prune)
-            total_size -= remaining_prefixes[prefix_to_prune]['size']
+            pruning_list = sorted(remaining_prefixes, key=lambda x: (remaining_prefixes[x]['date'], remaining_prefixes[x]['size']))
+            print(f"Total size of { total_size } >= max size of { {{ max_artifacts_size | default(32)}} * 1073741824 }")
+            while total_size >= {{ max_artifacts_size | default(32)}} * 1073741824 and len(pruning_list) > 0:
+                prefix_to_prune = pruning_list.pop()
+                print(f"Pruning { prefix_to_prune } due to size limits")
+                self.clean_single_build_dir(s3, prefix_to_prune)
+                total_size -= remaining_prefixes[prefix_to_prune]['size']
 
         return SUCCESS
 
