@@ -1,30 +1,39 @@
 ---
 
+  # This is due to crappy git behaviour generating
+  #  fatal: detected dubious ownership in repository at '/opt/oc_adopter_reg'
+- name: Ensure clone directory exists
+  file:
+    path: "{{ adopter_reg_home }}"
+    owner: "{{ adopter_server_user }}"
+    group: "{{ adopter_server_user }}"
+    state: directory
+
 - name: Cloning adopter reg service
   git:
-    # repo: https://github.com/opencast/adopter-registration-server.git
-    repo: https://github.com/gregorydlogan/adopter-registration-server.git
-    dest: "{{ adopter_reg_home}}"
+    repo: https://github.com/opencast/adopter-registration-server.git
+    dest: "{{ adopter_reg_home }}"
     force: true
+    version: "{{ adopter_reg_version }}"
+  become_user: "{{ adopter_server_user }}"
 
 - name: Creating python venv
   command:
-    cmd: python3.9 -m venv {{ adopter_reg_venv }}
+    cmd: python3 -m venv {{ adopter_reg_venv }}
     creates: "{{ adopter_reg_venv }}"
-
-- name: Updating python venv
-  pip:
-    name: "{{ item }}"
-    state: latest
-    executable: "{{ adopter_reg_venv }}/bin/pip3"
-  with_items:
-    - pip
-    - setuptools
+  become_user: "{{ adopter_server_user }}"
 
 - name: Installing dependencies
   pip:
     requirements: "{{ adopter_reg_home }}/requirements.txt"
     executable: "{{ adopter_reg_venv }}/bin/pip3"
+  become_user: "{{ adopter_server_user }}"
+
+- name: Changing the permissions
+  file:
+    path: "{{ adopter_reg_home }}"
+    owner: "{{ adopter_server_user }}"
+    group: "{{ adopter_server_user }}"
 
 - name: Templating systemd unit file
   template:
@@ -32,7 +41,7 @@
     dest: /etc/systemd/system/oc-reg-server.service
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   become: true
 
 - name: Generating Flask key
@@ -53,7 +62,7 @@
     name: oc-reg-server
     state: stopped
     daemon_reload: true
-  become: yes
+  become: true
 
 - name: Enabling and starting systemd unit
   systemd:
@@ -65,17 +74,18 @@
 
 - name: Ensuring the database file exists
   uri:
-    url: https://{{ inventory_hostname }}/admin
+    url: https://{{ inventory_hostname }}
     return_content: true
   delegate_to: 127.0.0.1
   become: false
+  register: result
+  until: result.content.find("Weiter zur Admin Page") != -1
+  retries: 5
+  delay: 10
 
-- name: Removing hardcoded superuser
-  command: sqlite3 {{ adopter_reg_home }}/instance/app.db 'DELETE FROM user WHERE email="admin"; DELETE FROM roles_users WHERE user_id=1'
-
-- name: Removing generated user to update its password
-  command: sqlite3 {{ adopter_reg_home }}/instance/app.db 'DELETE FROM user WHERE email="{{ reg_server_user }}"; DELETE FROM roles_users WHERE user_id={{ opencast_user_db_id }};'
+- name: Clearing user table
+  command: sqlite3 {{ adopter_reg_home }}/instance/app.db 'DELETE FROM user'
 
   # Role ID 1 is superuser
 - name: Adding user and role
-  command: sqlite3 {{ adopter_reg_home }}/instance/app.db "INSERT INTO user VALUES('oc_ansible_generated', {{ opencast_user_db_id }},'{{ reg_server_user }}@opencast.org','{{ reg_server_pass }}','1970-01-01 00:00:00','1970-01-01 00:00:00','','','',1); INSERT INTO roles_users VALUES({{ opencast_user_db_id }},1)"
+  command: sqlite3 {{ adopter_reg_home }}/instance/app.db "INSERT INTO user VALUES('oc_ansible_generated', {{ opencast_user_db_id }},'{{ reg_server_user }}','{{ reg_server_pass }}','1970-01-01 00:00:00','1970-01-01 00:00:00','','','',1); INSERT INTO roles_users VALUES({{ opencast_user_db_id }},1)"

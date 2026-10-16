@@ -1,0 +1,30 @@
+---
+
+- name: Fail early if os is not supported
+  ansible.builtin.assert:
+    that: ansible_facts['os_family'] == 'RedHat' and ansible_distribution_major_version == '9'
+
+- name: Install dependencies
+  ansible.builtin.package:
+    name:
+      - nmap-ncat
+      - curl
+      - ffmpeg
+      - tar
+      - java-17-openjdk-headless
+      - java-21-openjdk-headless
+      - gzip
+      - tesseract
+      - opensearch
+      - opensearch-plugin-analysis-icu
+      # ingest script
+      - python3-pyyaml
+      - python3-requests
+      - python3-yaml
+
+- name: Set default java
+  community.general.alternatives:
+    name: java
+    family: java-{{ java_version }}-openjdk.x86_64
+    state: selected
+  become: true

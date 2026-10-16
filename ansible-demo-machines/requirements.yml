@@ -1,10 +1,15 @@
 ---
-
 roles:
-  - lkiesow.dnf_autoupdate
-  - elan.opencast_firewalld
-  - elan.opencast_repository,v0.1.0
-  - elan.opencast_user,v0.1.0
+  - name: lkiesow.dnf_autoupdate
+    version: 3.0.0
+  - name: lkiesow.apt_autoupdate
+    version: 1.0.0
+  - name: elan.opencast_firewalld
+    version: v0.1.0
+  - name: elan.opencast_repository
+    version: v0.1.0
+  - name: elan.opencast_user
+    version: v0.1.0
 
 collections:
   - community.crypto

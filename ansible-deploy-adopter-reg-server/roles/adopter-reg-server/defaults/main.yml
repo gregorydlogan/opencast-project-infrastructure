@@ -1,8 +1,12 @@
 ---
 
+adopter_server_user: "opencast"
+
 adopter_reg_home: /opt/oc_adopter_reg
 
 adopter_reg_venv: "{{ adopter_reg_home }}/venv"
+
+adopter_reg_version: "HEAD"
 
 # This is the ID of the opencast user once it has been created
 # Initially this ID belongs to the default admin superuser

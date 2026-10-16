@@ -1,37 +1,60 @@
 ---
 
-- name: install nginx
-  package:
+- name: Add nginx stable repository
+  ansible.builtin.yum_repository:
+    name: nginx-stable
+    description: nginx stable repo
+    baseurl: https://nginx.org/packages/centos/$releasever/$basearch/
+    gpgcheck: true
+    enabled: true
+    gpgkey: https://nginx.org/keys/nginx_signing.key
+    file: nginx-stable
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Add nginx repository
+  ansible.builtin.deb822_repository:
     name: nginx
+    types: deb
+    uris: https://nginx.org/packages/ubuntu
+    suites: '{{ ansible_facts["distribution_release"] }}'
+    components: nginx
+    signed_by: https://nginx.org/keys/nginx_signing.key
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: true
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Pin nginx repository
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/99nginx
+    content: |
+      Package: *
+      Pin: origin nginx.org
+      Pin: release o=nginx
+      Pin-Priority: 900
+    owner: root
+    group: root
+    mode: "0644"
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Install Nginx
+  ansible.builtin.package:
+    name:
+      - nginx
+      - nginx-module-acme
     state: present
 
-- name: create ssl directory
-  file:
-    path: /etc/nginx/ssl
-    state: directory
-    mode: '0755'
-
-- name: configure nginx mime types
-  copy:
+- name: Configure Nginx mime types
+  ansible.builtin.copy:
     src: mime.types
     dest: /etc/nginx/mime.types
     owner: root
     group: root
     mode: '0644'
 
-- name: initial configuration for certificates
-  copy:
-    src: '{{ item }}.pem'
-    dest: /etc/nginx/ssl/{{ inventory_hostname }}.{{ item }}
-    owner: root
-    group: root
-    force: false
-    mode: '0640'
-  loop:
-    - crt
-    - key
-
-- name: create diffie hellman ephemeral parameters for nginx
+- name: Create diffie hellman ephemeral parameters for nginx
   community.crypto.openssl_dhparam:
     path: /etc/nginx/ssl/dhparam.pem
     size: 2048
@@ -39,35 +62,29 @@
     group: root
     mode: '0640'
 
-- name: configure nginx
-  template:
+- name: Configure Nginx
+  ansible.builtin.template:
     src: nginx.conf
     dest: /etc/nginx/nginx.conf
     owner: root
     group: root
-    mode: 0640
-  notify: reload nginx
+    mode: '0640'
+  notify: Reload Nginx
 
-- name: install selinux config libs
-  package:
+- name: Install SElinux config libs
+  ansible.builtin.package:
     name: python3-libsemanage
-  when: >
-    ansible_os_family == 'RedHat'
-    and ansible_distribution_major_version >= '8'
+  when: ansible_facts['os_family'] == 'RedHat'
 
-- name: allow httpd to act as reverse proxy
-  become: true
-  seboolean:
+- name: Allow httpd to act as reverse proxy
+  ansible.posix.seboolean:
     name: httpd_can_network_relay
     state: true
     persistent: true
-  when: >
-    ansible_distribution == 'CentOS'
-    or ansible_distribution == 'RedHat'
-    or ansible_distribution == 'Scientific'
+  when: ansible_facts['os_family'] == 'RedHat'
 
-- name: start and enable nginx
-  service:
+- name: Start and enable nginx
+  ansible.builtin.service:
     name: nginx
     enabled: true
     state: started
