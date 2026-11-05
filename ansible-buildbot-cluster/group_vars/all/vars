@@ -11,7 +11,7 @@ opencast:
     branch: 'develop'
     pom: '22'
     jdk: [ '21' ]
-    ffmpeg: 18
+    ffmpeg: 22
     profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
     el: [ ]
     cores: '1C'
@@ -19,10 +19,10 @@ opencast:
     deb_signing_key_id: "3259FFB3967266533FCD4B249A7EA8E5B3820B26"
     deb_signing_key: "{{ vault_all_deb_signing_key }}"
   21.x:
-    branch: 'r/22.x'
-    pom: '22'
+    branch: 'r/21.x'
+    pom: '21'
     jdk: [ '21' ]
-    ffmpeg: 18
+    ffmpeg: 21
     profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
     el: [ ]
     cores: '1C'
@@ -33,7 +33,7 @@ opencast:
     branch: 'r/20.x'
     pom: '20'
     jdk: [ '21' ]
-    ffmpeg: 18
+    ffmpeg: 20
     profiles: [ 'admin', 'adminpresentation', 'allinone', 'ingest', 'presentation', 'worker' ]
     el: [ ]
     cores: '1C'
